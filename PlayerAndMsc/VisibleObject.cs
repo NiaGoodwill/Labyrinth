@@ -15,6 +15,11 @@ class VisibleObject
         position.X = X;
     }
 
+    public Vector2 GetPosition()
+    {
+        return position;
+    }
+
     public int GetX()
     {
         return (int)position.X;

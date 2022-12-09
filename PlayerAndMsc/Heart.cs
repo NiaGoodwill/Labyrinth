@@ -7,7 +7,7 @@ class Heart: VisibleObject
 
     public Heart(Vector2 Position)
     {
-        heartImage = Raylib.LoadTexture("Heart.png");
+        heartImage = Raylib.LoadTexture("PlayerAndMsc/Heart.png");
         SetPosition(Position.X, Position.Y);
     }
 

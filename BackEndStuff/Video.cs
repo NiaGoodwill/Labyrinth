@@ -50,16 +50,26 @@ class Video
         Texture2D texture = theObject.GetTexture();
         int Y = theObject.GetY();
         int X = theObject.GetX();
-        Raylib.DrawTexture(texture, X, Y, Color.BLANK);
+        Raylib.DrawTexture(texture, X, Y, Color.RED);
     }
 
-    public void DrawGameObject(GameObject theObject)
+    public void DrawWeapon(Weapon theObject)
     {
         Texture2D texture = theObject.GetTexture();
         int Y = theObject.GetY();
         int X = theObject.GetX();
-        Raylib.DrawTexture(texture, X, Y, Color.BLANK);
+        Raylib.DrawCircle(X + 15, Y + 15, 13, Color.LIGHTGRAY);
+        Raylib.DrawTexture(texture, X + 2, Y + 2, Color.BLACK);
     }
+
+    public void DrawTreasure(Treasure theObject)
+    {
+        Texture2D texture = theObject.GetTexture();
+        int Y = theObject.GetY();
+        int X = theObject.GetX();
+        Raylib.DrawTexture(texture, X, Y, Color.LIGHTGRAY);
+    }
+
 
     public void DrawTile(TileOutline theObject)
     {
@@ -74,10 +84,15 @@ class Video
     {
         string text = theObject.GetText();
         int X = theObject.GetX();
-        int Y = theObject.GetY();
+        int Y = theObject.GetY() - 3;
         int FontSize = theObject.GetFontSize();
         Color color = theObject.GetColor();
         Raylib.DrawText(text, X, Y, FontSize, color);
+    }
+
+    public void DrawLine(Vector2 startpos, Vector2 endpos, Color color)
+    {
+        Raylib.DrawLineV(startpos, endpos, color);
     }
     /// <summary>
     /// Draws the given list of actors on the screen.
