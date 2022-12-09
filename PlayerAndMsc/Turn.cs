@@ -163,19 +163,19 @@ class Turn
         player.Draw();
         if (player.IsObjectNear(player1))
         {
-            player1.Draw();
+            player1.DrawPlayer();
         }
         if (player.IsObjectNear(player2))
         {
-            player2.Draw();
+            player2.DrawPlayer();
         }
         if (player.IsObjectNear(player3))
         {
-            player3.Draw();
+            player3.DrawPlayer();
         }
         if (player.IsObjectNear(player4))
         {
-            player4.Draw();
+            player4.DrawPlayer();
         }
         maze.Draw();
 

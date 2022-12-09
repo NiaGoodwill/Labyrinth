@@ -13,7 +13,6 @@ class Weapon: GameObject
     {
         player.Damage();
         used = true;
-        Console.WriteLine("stab");
     }
 
     public void AdjustUse(bool newUse)

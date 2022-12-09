@@ -161,7 +161,12 @@ class Player: VisibleObject
 
         if (!startKnife.IsUsed())
         {
-            video.DrawWeapon(startKnife);         
+            video.DrawWeapon(startKnife);  
+            Console.WriteLine("LOL");       
+        }
+        else
+        {
+            Console.WriteLine("stab");
         }
         if (!secondKnife.IsUsed())
         {
@@ -277,5 +282,12 @@ class Player: VisibleObject
         gun = new Gun(new Vector2 (17 * CELL_SIZE, 3 * CELL_SIZE));
 
         startKnife.AdjustUse(false);
+    }
+
+    public void DrawPlayer()
+    {
+        Vector2 Position = new Vector2(GetX(), GetY());
+        TextObject playerText = new TextObject(Position, "O", 30, color);
+        video.DrawTextObject(playerText);
     }
 }
