@@ -20,6 +20,10 @@ class Keyboard
         keys["2"] = KeyboardKey.KEY_TWO;
         keys["3"] = KeyboardKey.KEY_THREE;
         keys["4"] = KeyboardKey.KEY_FOUR;
+        keys["^"] = KeyboardKey.KEY_UP;
+        keys["<"] = KeyboardKey.KEY_LEFT;
+        keys[">"] = KeyboardKey.KEY_RIGHT;
+        keys["v"] = KeyboardKey.KEY_DOWN;
         keys["enter"] = KeyboardKey.KEY_ENTER;
         keys["space"] = KeyboardKey.KEY_SPACE;
     }

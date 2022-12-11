@@ -4,57 +4,56 @@ using System.Numerics;
 class Maze: VisibleObject
 {
     int CELL_SIZE = 30;
+    int exitSide;
+    Wall exit;
     Video video;
     Color black = Color.BLACK;
     Color white = Color.WHITE;
     Dictionary<int, Corner> CornerDict = new Dictionary<int, Corner>();
     List<Wall> theMaze = new List<Wall>();
     Random random = new Random();
+    Armory armory;
+    Hospital hospital;
+    TreasureRoom treasureRoom;
+    TileOutline exitTile;
 
     public Maze(Video Video)
     {
         video = Video;
         CreateDict();
-        int XorY = random.Next(2);
-        int TopBotLeftRight = random.Next(2);
-        if (XorY == 1)
+        exitSide = random.Next(1, 5);
+        if (exitSide == 1)
         {
-            int ExitX = random.Next(7, 16);
-            ExitStart.X = ExitX;
-            ExitEnd.X = ExitX +1;
-
-            if (TopBotLeftRight == 1)
-            {
-                ExitStart.Y = 4;
-                ExitEnd.Y = 4;
-            }
-            else
-            {
-                ExitStart.Y = 13;
-                ExitEnd.Y = 13;
-            }
+            int rand = random.Next(1, 10);
+            exit = new Wall(CornerDict[rand], CornerDict[rand + 1]);
+            exitTile = new TileOutline(CornerDict[rand].GetVector(), white);
         }
-        else
+        else if (exitSide == 2)
         {
-            int ExitY = random.Next(4, 13);
-            ExitStart.Y = ExitY;
-            ExitEnd.Y = ExitY + 1;
-
-            if (TopBotLeftRight == 1)
-            {
-                ExitStart.X = 7;
-                ExitEnd.X = 7;
-            }
-            else
-            {
-                ExitStart.X = 16;
-                ExitEnd.X = 16;
-            }
+            int rand = (random.Next(0, 9) * 10) + 1;
+            exit = new Wall(CornerDict[rand], CornerDict[rand + 10]);
+            exitTile = new TileOutline(CornerDict[rand].GetVector(), white);
         }
-        ExitStart = ExitStart * CELL_SIZE;
-        ExitEnd = ExitEnd * CELL_SIZE;
+        else if (exitSide == 3)
+        {
+            int rand = random.Next(91, 100);
+            exit = new Wall(CornerDict[rand], CornerDict[rand + 1]);
+            exitTile = new TileOutline(CornerDict[rand - 10].GetVector(), white);
+        }
+        else if (exitSide == 4)
+        {
+            int rand = random.Next(1, 10) * 10;
+            exit = new Wall(CornerDict[rand], CornerDict[rand + 10]);
+            exitTile = new TileOutline(CornerDict[rand - 1].GetVector(), white);
+        }
 
         CreateMaze();
+        Corner randomRoom = RandomRoom();
+        armory = new Armory(randomRoom.GetPosition(), Color.MAROON);
+        randomRoom = RandomRoom();
+        hospital = new Hospital(randomRoom.GetPosition(), Color.ORANGE);
+        randomRoom = RandomRoom();
+        treasureRoom = new TreasureRoom(randomRoom.GetPosition(), Color.DARKBLUE);
     }
 
     public override void Draw()
@@ -63,25 +62,11 @@ class Maze: VisibleObject
         video.DrawLine(TOPRIGHT, BOTRIGHT, white);
         video.DrawLine(BOTRIGHT, BOTLEFT, white);
         video.DrawLine(BOTLEFT, TOPLEFT, white);
+        ExitStart = exit.GetStartPos().GetVector();
+        ExitEnd = exit.GetEndPos().GetVector();
         video.DrawLine(ExitStart, ExitEnd, black);
 
-        // draw the corners
-        // foreach (var lol in CornerDict)
-        // {
-            // Corner corner = lol.Value;
-            // Vector2 vector = corner.GetVector();
-            // if (corner.IsCornerUsed())
-            // {
-                // Raylib.DrawPixelV(vector, Color.RED);
-            // }
-            // else
-            // {
-                // Raylib.DrawPixelV(vector, white);
-            // }
-        // }
-
-        // draw a pixel
-        // Raylib.DrawPixelV(CornerDict[100].GetVector(), Color.GREEN);
+        video.DrawTile(exitTile);
 
         foreach (Wall wall in theMaze)
         {
@@ -176,7 +161,7 @@ class Maze: VisibleObject
     public Wall IsThereAWall(Vector2 position, int direction)
     {
         Wall theReturn = new Wall(new Corner(new Vector2(1,1), true), new Corner(new Vector2(1,1), true));
-        Vector2 theRealPosition = new Vector2((position.X - 5)/ CELL_SIZE, (position.Y - 4) / CELL_SIZE);
+        Vector2 theRealPosition = new Vector2((position.X - 6)/ CELL_SIZE, (position.Y - 4) / CELL_SIZE);
         if (direction == 1)
         {
             int key = (int)(((theRealPosition.Y - 4) * 10) + (theRealPosition.X - 6));
@@ -283,6 +268,40 @@ class Maze: VisibleObject
         }
 
         return theReturn;
+    }
+
+    private Corner RandomRoom()
+    {
+        Corner theReturn = CornerDict[100];
+        while (theReturn.GetPosition().Y == 13 * CELL_SIZE || theReturn.GetPosition().X == 16 * CELL_SIZE)
+        {
+            int theRandom = random.Next(1, 90);
+            theReturn = CornerDict[theRandom];
+        }
+        return theReturn;
+    }
+
+    public Armory GetArmory()
+    {
+        return armory;
+    }
+    public Hospital GetHospital()
+    {
+        return hospital;
+    }
+    public TreasureRoom GetTreasureRoom()
+    {
+        return treasureRoom;
+    }
+
+    public Wall GetExit()
+    {
+        return exit;
+    }
+
+    public TileOutline GetExitTile()
+    {
+        return exitTile;
     }
 
     Vector2 TOPLEFT = new Vector2(7 * 30, 4 * 30);

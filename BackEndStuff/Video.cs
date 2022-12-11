@@ -65,9 +65,9 @@ class Video
     public void DrawTreasure(Treasure theObject)
     {
         Texture2D texture = theObject.GetTexture();
-        int Y = theObject.GetY();
-        int X = theObject.GetX();
-        Raylib.DrawTexture(texture, X, Y, Color.LIGHTGRAY);
+        int Y = theObject.GetY() + 3;
+        int X = theObject.GetX() + 2;
+        Raylib.DrawTexture(texture, X, Y, Color.SKYBLUE);
     }
 
 

@@ -6,13 +6,19 @@ Maze maze = new Maze(video);
 Turn turn = new Turn(video, maze);
 
 video.OpenWindow();
-turn.CreateTextureObjects();
-while (video.IsWindowOpen())
+bool arePlayersCreated = turn.ArePlayersCreated();
+while (video.IsWindowOpen() && !arePlayersCreated)
 {
-   
     video.ClearBuffer();
     turn.DrawScreen();
     video.FlushBuffer();
-    
+    arePlayersCreated = turn.ArePlayersCreated();
+}
+turn.CreateTextureObjects();
+while (video.IsWindowOpen() && arePlayersCreated)
+{
+    video.ClearBuffer();
+    turn.DrawScreen();
+    video.FlushBuffer();
 }
 video.CloseWindow();

@@ -13,10 +13,14 @@ class Player: VisibleObject
     Heart heart2;
     Heart heart3;
     Maze maze;
+    Wall exit;
     int health = 3;
     Color color;
     int turnCounter = 0;
     int playerNumber;
+    bool hasTreasure = false;
+    bool visitedArmory = false;
+    bool visitedHospital = false;
     List<Wall> visibleWalls = new List<Wall>();
     public Player(Maze Maze, Keyboard Keyboard, Video Video, int X, int Y, Color Color, int PlayerNumber)
     {
@@ -24,9 +28,9 @@ class Player: VisibleObject
         color = Color;
         maze = Maze;
         video = Video;
-        SetPosition(X * CELL_SIZE + 5, Y * CELL_SIZE + 4);
+        SetPosition(X * CELL_SIZE + 6, Y * CELL_SIZE + 4);
         playerNumber = PlayerNumber;
-        Console.WriteLine(GetPosition());
+        exit = maze.GetExit();
     }
 
     public void Update(int updateCounter, Player otherPlayer1, Player otherPlayer2, Player otherPlayer3)
@@ -92,7 +96,7 @@ class Player: VisibleObject
                         visibleWalls.Add(collisionWall);
                     }
                 }
-            
+
                 // stab
                 if (keyboard.IsKeyPressed("f"))
                 {
@@ -103,16 +107,19 @@ class Player: VisibleObject
                         {
                             startKnife.Use(otherPlayer1);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                         else if (IsObjectNear(otherPlayer2))
                         {
                             startKnife.Use(otherPlayer2);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                         else if (IsObjectNear(otherPlayer3))
                         {
                             startKnife.Use(otherPlayer3);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                     }
                     else if (!secondKnife.IsUsed())
@@ -121,24 +128,114 @@ class Player: VisibleObject
                         {
                             secondKnife.Use(otherPlayer1);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                         else if (IsObjectNear(otherPlayer2))
                         {
                             secondKnife.Use(otherPlayer2);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                         else if (IsObjectNear(otherPlayer3))
                         {
                             secondKnife.Use(otherPlayer3);
                             turnCounter += 1;
+                            Console.WriteLine("stab");
                         }
                     }
                 }
 
                 // shoot
-                if (keyboard.IsKeyPressed("space") && !gun.IsUsed())
+                if (!gun.IsUsed())
                 {
-
+                    if (keyboard.IsKeyPressed("^"))
+                    {
+                        Console.WriteLine("BANG");
+                        Bullet bullet = new Bullet(GetPosition(), 1, gun);
+                        while (!gun.IsUsed())
+                        {
+                            bullet.Move(maze);
+                            if (bullet.GetPosition() == otherPlayer1.GetPosition())
+                            {
+                                gun.Use(otherPlayer1);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer2.GetPosition())
+                            {
+                                gun.Use(otherPlayer2);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer3.GetPosition())
+                            {
+                                gun.Use(otherPlayer3);
+                            }
+                        }
+                        bullet.Draw();
+                    }
+                    else if (keyboard.IsKeyPressed("<"))
+                    {
+                        Console.WriteLine("BANG");
+                        Bullet bullet = new Bullet(GetPosition(), 2, gun);
+                        while (!gun.IsUsed())
+                        {
+                            bullet.Move(maze);
+                            if (bullet.GetPosition() == otherPlayer1.GetPosition())
+                            {
+                                gun.Use(otherPlayer1);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer2.GetPosition())
+                            {
+                                gun.Use(otherPlayer2);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer3.GetPosition())
+                            {
+                                gun.Use(otherPlayer3);
+                            }
+                        }
+                        bullet.Draw();
+                    }
+                    else if (keyboard.IsKeyPressed(">"))
+                    {
+                        Console.WriteLine("BANG");
+                        Bullet bullet = new Bullet(GetPosition(), 4, gun);
+                        while (!gun.IsUsed())
+                        {
+                            bullet.Move(maze);
+                            if (bullet.GetPosition() == otherPlayer1.GetPosition())
+                            {
+                                gun.Use(otherPlayer1);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer2.GetPosition())
+                            {
+                                gun.Use(otherPlayer2);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer3.GetPosition())
+                            {
+                                gun.Use(otherPlayer3);
+                            }
+                        }
+                        bullet.Draw();
+                    }
+                    else if (keyboard.IsKeyPressed("v"))
+                    {
+                        Console.WriteLine("BANG");
+                        Bullet bullet = new Bullet(GetPosition(), 3, gun);
+                        while (!gun.IsUsed())
+                        {
+                            bullet.Move(maze);
+                            if (bullet.GetPosition() == otherPlayer1.GetPosition())
+                            {
+                                gun.Use(otherPlayer1);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer2.GetPosition())
+                            {
+                                gun.Use(otherPlayer2);
+                            }
+                            else if (bullet.GetPosition() == otherPlayer3.GetPosition())
+                            {
+                                gun.Use(otherPlayer3);
+                            }
+                        }
+                        bullet.Draw();
+                    }
                 }
             }
         }
@@ -161,12 +258,7 @@ class Player: VisibleObject
 
         if (!startKnife.IsUsed())
         {
-            video.DrawWeapon(startKnife);  
-            Console.WriteLine("LOL");       
-        }
-        else
-        {
-            Console.WriteLine("stab");
+            video.DrawWeapon(startKnife);        
         }
         if (!secondKnife.IsUsed())
         {
@@ -177,13 +269,15 @@ class Player: VisibleObject
             video.DrawWeapon(gun);
         }
 
-        Vector2 Position = new Vector2(GetX(), GetY());
-        TextObject playerText = new TextObject(Position, "O", 30, color);
-        video.DrawTextObject(playerText);
-
-        if (health == 0)
+        if (health < 1)
         {
             video.DrawTextObject(new TextObject(new Vector2(690/2 - 145, 4 * CELL_SIZE), "You Lose", 60, Color.RED));
+
+            maze.Draw();
+        }
+        else
+        {
+            DrawPlayer();
         }
 
         if (visibleWalls.Count() > 0)
@@ -195,6 +289,9 @@ class Player: VisibleObject
                 video.DrawLine(corner1.GetVector(), corner2.GetVector(), Color.WHITE);
             }
         }
+        Vector2 ExitStart = exit.GetStartPos().GetVector();
+        Vector2 ExitEnd = exit.GetEndPos().GetVector();
+        video.DrawLine(ExitStart, ExitEnd, Color.BLACK);
     }
 
     public void Damage()
@@ -204,7 +301,7 @@ class Player: VisibleObject
 
     public void Heal()
     {
-        health += 1;
+        health = 3;
     }
 
     public int GetTurnCounter()
@@ -222,6 +319,15 @@ class Player: VisibleObject
         bool returnValue = false;
         Vector2 ourPosition = GetPosition();
         Vector2 itsPosition = theObject.GetPosition();
+        if (theObject is Room)
+        {
+            itsPosition = new Vector2 (itsPosition.X + 6, itsPosition.Y + 4);
+        }
+        if (theObject is Treasure)
+        {
+            itsPosition = new Vector2 (itsPosition.X + 6, itsPosition.Y + 4);
+        }
+
         if (ourPosition.X + CELL_SIZE == itsPosition.X && ourPosition.Y == itsPosition.Y)
         {
             Wall newWall = new Wall(new Corner(new Vector2(1,1), true), new Corner(new Vector2(1,1), true));
@@ -258,6 +364,7 @@ class Player: VisibleObject
                 returnValue = true;
             }
         }
+
         return returnValue;
     }
 
@@ -289,5 +396,48 @@ class Player: VisibleObject
         Vector2 Position = new Vector2(GetX(), GetY());
         TextObject playerText = new TextObject(Position, "O", 30, color);
         video.DrawTextObject(playerText);
+    }
+
+    public bool HasTreasure()
+    {
+        return hasTreasure;
+    }
+
+    public void FindTreasure()
+    {
+        hasTreasure = true;
+    }
+
+    public void LoseTreasure()
+    {
+        hasTreasure = false;
+    }
+
+    public bool HasVisitedArmory()
+    {
+        return visitedArmory;
+    }
+
+    public void VisitArmory()
+    {
+        visitedArmory = true;
+        secondKnife.AdjustUse(false);
+        gun.AdjustUse(false);
+    }
+
+    public bool HasVisitedHospital()
+    {
+        return visitedHospital;
+    }
+
+    public void VisitHospital()
+    {
+        visitedHospital = true;
+        Heal();
+    }
+
+    public int GetHealth()
+    {
+        return health;
     }
 }
